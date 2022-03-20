@@ -57,5 +57,22 @@ class PostControllerTest extends TestCase
 
         $response->assertStatus(404); //not found
     }
+
+
+    public function test_update()
+    {
+        //$this->withoutExceptionHandling(); //muestra en detalle el error
+        $post = Post::factory()->create();
+
+        $response = $this->json('PUT', "/api/posts/$post->id", [
+            'title' => 'Nuevo'
+        ]);
+
+        $response->assertJsonStructure(['id','title','created_at', 'updated_at'])
+        ->assertJson(['title' => 'Nuevo'])
+        ->assertStatus(200);   //Ok
+
+        $this->assertDatabaseHas('posts', ['title' => 'Nuevo']);
+    }
 }
 
